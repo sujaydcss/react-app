@@ -1,38 +1,47 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import Person from "./Person/Person";
-import person from "./Person/Person";
 
 class App extends Component {
   state = {
     persons: [
-      { name: "Jay", age: "24" },
-      { name: "Bj", age: "19" },
-      { name: "Mona", age: "4" }
+      { id : 'jxcwa',name: "Jay", age: 24 },
+      { id : 'bjwssv',name: "Bj", age: 19 },
+      { id : 'bvewc',name: "Mona", age: 14 }
     ],
     vanish:false
-  };
+  }
 
-  switchNameHandler = newName => {
-    // console.log('switch clicked');
+  switchNameHandler = (newName) => {
     this.setState({
       persons: [
-        { name: newName, age: "25" },
-        { name: "Bijoy", age: "20" },
-        { name: "Mona", age: "14" }
+        { id : 'jxcwa',name: newName, age: 24 },
+        { id : 'bjwssv',name: "Bijoy", age: 19 },
+        { id : 'bvewc',name: "Mona", age: 15 }
       ]
     });
+    console.log(this.state.persons);
   };
 
-  nameChangeHandler = event => {
-    this.setState({
-      persons: [
-        { name: event.target.value, age: "25" },
-        { name: "Bijoy", age: "20" },
-        { name: "Mona", age: "14" }
-      ]
+  deletePersonHandler = (index) => {
+    const prsons = [...this.state.persons];
+    prsons.splice(index,1);
+    this.setState({persons:prsons});
+
+  };
+
+  nameChangeHandler = (event,id) => {
+    console.log(this.state.persons);
+    const personIndex = this.state.persons.findIndex( prsn =>{
+      return prsn.id === id;
     });
+    let person = {...this.state.persons[personIndex]}
+    person.name = event.target.value;
+    const prsons = [...this.state.persons];
+    prsons[personIndex] = person;
+
+    this.setState( {persons: prsons} );
+    console.log(this.state.persons);
   };
 
   vanishHandler = () => {
@@ -40,50 +49,52 @@ class App extends Component {
     this.setState({vanish:(!tf)})
   }
 
-  
   render() {
     const style = {
-      backgroundColor: "green",
+      backgroundColor: "black",
+      color : "white",
       fontSize: "25px",
       padding: "8px"
     };
 
     let persons = null;
+
     if(!this.state.vanish) {
       persons = (
         <div>
-            <button
-              style={style}
-              onClick={this.switchNameHandler.bind(this, "Sujay")}
-            >switch Name</button>
-            {
-              this.state.persons.map(person => {
-                return <Person name={person.name} age={person.age}/>
-              })
-            }
-            {/* <Person
-              name={this.state.persons[0].name}
-              age={this.state.persons[0].age}
-              click={this.switchNameHandler.bind(this, "Sourav")}
-              changed={this.nameChangeHandler}/>
-            <Person
-              name={this.state.persons[1].name}
-              age={this.state.persons[1].age}> My hobies are play badminton </Person> */}
+            {this.state.persons.map((person, index) => {
+                return <Person 
+                click = {() => this.deletePersonHandler(index)}
+                name={person.name} 
+                age={person.age}
+                key = {person.id}
+                changed = {(event) => this.nameChangeHandler(event,person.id)}/>
+            })}
         </div>
-      )
+      );
+      style.backgroundColor = "green";
     }
-  
+    const colorsClass = [];
+    if(this.state.persons.length<=2) {
+      colorsClass.push('red');
+    }
+    if(this.state.persons.length<=1) {
+      colorsClass.push('bold');
+    }
 
     return (
       <div className="App">
         <h1 className="App-title">Welcome to React (heading 1)</h1>
-        <p className="App-intro">To get started, edit</p>
+        <p className={colorsClass.join(' ')}>To toggles click vanish all below, else click on the name to vanish one by one</p>
 
         <button
             style={style}
-            onClick={this.vanishHandler}
-          >vanish all below</button>
-          {persons}
+            onClick={this.vanishHandler}>vanish all below</button>
+        
+        <button
+              style={style}
+              onClick={this.switchNameHandler.bind(this, "Sujay")}>switch Name</button>
+        {persons}
       </div>
     );
   }
