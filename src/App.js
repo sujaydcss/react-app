@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import "./App.css";
-import Person from "./Person/Person";
+import React, { Component } from 'react';
+import './App.css';
+import Radium, { StyleRoot } from 'radium';
+import Person from './Person/Person';
 
 class App extends Component {
   state = {
@@ -27,7 +28,6 @@ class App extends Component {
     const prsons = [...this.state.persons];
     prsons.splice(index,1);
     this.setState({persons:prsons});
-
   };
 
   nameChangeHandler = (event,id) => {
@@ -49,13 +49,23 @@ class App extends Component {
     this.setState({vanish:(!tf)})
   }
 
-  render() {
+  render () {
     const style = {
-      backgroundColor: "black",
-      color : "white",
-      fontSize: "25px",
-      padding: "8px"
+      backgroundColor: 'green',
+      color: 'white',
+      font: 'inherit',
+      border: '1px solid blue',
+      padding: '8px',
+      cursor: 'pointer',
     };
+    const style1 = {...style,
+      ':hover': {
+        backgroundColor: 'lightgreen',
+        color: 'black'
+      }
+    };
+
+    const style2 = {...style};
 
     let persons = null;
 
@@ -72,8 +82,14 @@ class App extends Component {
             })}
         </div>
       );
-      style.backgroundColor = "green";
+
+      style1.backgroundColor = 'red';
+      style1[':hover'] = {
+        backgroundColor: 'salmon',
+        color: 'black'
+      };
     }
+
     const colorsClass = [];
     if(this.state.persons.length<=2) {
       colorsClass.push('red');
@@ -83,21 +99,22 @@ class App extends Component {
     }
 
     return (
-      <div className="App">
-        <h1 className="App-title">Welcome to React (heading 1)</h1>
-        <p className={colorsClass.join(' ')}>To toggles click vanish all below, else click on the name to vanish one by one</p>
+      <StyleRoot>
+        <div className="App">
+          <h1 className="App-title">Welcome to React (heading 1)</h1>
+          <p className={colorsClass.join(' ')}>To toggles click vanish all below, else click on the name to vanish one by one</p>
 
-        <button
-            style={style}
+          <button
+            style={style1}
             onClick={this.vanishHandler}>vanish all below</button>
-        
-        <button
-              style={style}
-              onClick={this.switchNameHandler.bind(this, "Sujay")}>switch Name</button>
-        {persons}
-      </div>
+          <button
+            style={style2}
+            onClick={this.switchNameHandler.bind(this, "Sujay")}>switch Name</button>
+          {persons}
+        </div>
+      </StyleRoot>
     );
   }
 }
 
-export default App;
+export default Radium( App );
